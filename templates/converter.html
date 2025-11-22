@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>LB23 - Unit Converter</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 16px;
+        }
+        h1 {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+        }
+        input, select {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+        .row {
+            display: flex;
+            gap: 8px;
+        }
+        .row > div {
+            flex: 1;
+        }
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .message {
+            margin-top: 16px;
+            font-weight: bold;
+        }
+        .error {
+            color: #b00020;
+        }
+        .success {
+            color: #006400;
+        }
+    </style>
+</head>
+<body>
+    <h1>LB23 - Unit Converter</h1>
+    <div>
+        <label for="converters">Select converter</label>
+        <select id="converters">
+            <option value="length">Length converter</option>
+            <option value="weight">Weight converter</option>
+            <option value="temperature">Temperature converter</option>
+            <option value="air">Air converter</option>
+            <option value="mass">Mass converter</option>
+        </select>
+
+    </div>
+
+    <form method="post">
+        <label for="value">Value</label>
+        <input
+            id="value"
+            name="value"
+            type="number"
+            step="any"
+            placeholder="Enter a number"
+            value="{{ result.input_value if result }}"
+        />
+
+        <div class="row">
+            <div>
+                <label for="from_unit">From</label>
+                <select id="from_unit" name="from_unit">
+                    <option value="m" {% if result and result.from_unit == "m" %}selected{% endif %}>Meter (m)</option>
+                    <option value="cm" {% if result and result.from_unit == "cm" %}selected{% endif %}>Centimeter (cm)</option>
+                    <option value="mm" {% if result and result.from_unit == "mm" %}selected{% endif %}>Millimeter (mm)</option>
+                    <option value="km" {% if result and result.from_unit == "km" %}selected{% endif %}>Kilometer (km)</option>
+                    <option value="in" {% if result and result.from_unit == "in" %}selected{% endif %}>Inches (in)</option>
+                    <option value="ft" {% if result and result.from_unit == "ft" %}selected{% endif %}>Feet (ft)</option>
+                    <option value="yd" {% if result and result.from_unit == "yd" %}selected{% endif %}>Yards (yd)</option>
+                    <option value="mi" {% if result and result.from_unit == "mi" %}selected{% endif %}>Miles (mi)</option>
+                </select>
+            </div>
+            <div>
+                <label for="to_unit">To</label>
+                <select id="to_unit" name="to_unit">
+                    <option value="m" {% if result and result.to_unit == "m" %}selected{% endif %}>Meter (m)</option>
+                    <option value="cm" {% if result and result.to_unit == "cm" %}selected{% endif %}>Centimeter (cm)</option>
+                    <option value="mm" {% if result and result.to_unit == "mm" %}selected{% endif %}>Millimeter (mm)</option>
+                    <option value="km" {% if result and result.to_unit == "km" %}selected{% endif %}>Kilometer (km)</option>
+                    <option value="in" {% if result and result.to_unit == "in" %}selected{% endif %}>Inches (in)</option>
+                    <option value="ft" {% if result and result.to_unit == "ft" %}selected{% endif %}>Feet (ft)</option>
+                    <option value="yd" {% if result and result.to_unit == "yd" %}selected{% endif %}>Yards (yd)</option>
+                    <option value="mi" {% if result and result.to_unit == "mi" %}selected{% endif %}>Miles (mi)</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit">Convert</button>
+    </form>
+    
+    {% if error %}
+        <div class="message error">{{ error }}</div>
+    {% endif %}
+    
+    {% if result %}
+        <div class="message success">
+            Result: {{ result.input_value }} {{ result.from_unit }}
+            = {{ result.output_value }} {{result.to_unit }}
+        </div>
+    {% endif %}
+</body>
+</html>
