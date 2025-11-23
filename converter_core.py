@@ -28,3 +28,22 @@ def convert_length(value: float, from_unit: str, to_unit: str) -> float:
     converted_value = value_in_meters / LENGTH__IN_METERS[to_unit]
 
     return converted_value
+
+# 1 unit = X kilograms
+WEIGHT_IN_KG = {
+    "kg": 1.0,
+    "g": 0.001,
+    "lb": 0.45359237,
+    "oz": 0.0283495231,
+}
+
+def convert_weight(value: float, from_unit: str, to_unit: str) -> float:
+    #Converts between weight units via kilograms.
+    if from_unit not in WEIGHT_IN_KG:
+        raise ValueError(f"Unknown weight unit: {from_unit}")
+    if to_unit not in WEIGHT_IN_KG:
+        raise ValueError(f"Unknown weight unit: {to_unit}")
+    
+    value_in_kg = value * WEIGHT_IN_KG[from_unit]
+    converted_value = value_in_kg / WEIGHT_IN_KG[to_unit]
+    return converted_value

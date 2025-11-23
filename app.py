@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from converter_core import convert_length
+from converter_core import convert_length, convert_weight
 
 app = Flask(__name__)
 
@@ -11,6 +11,7 @@ def index():
 
     if request.method == "POST":
         raw_value = request.form.get("value", "").strip()
+        converter_type = request.form.get("converter_type", "length")
         from_unit = request.form.get("from_unit", "m")
         to_unit = request.form.get("to_unit", "cm")
 
@@ -19,13 +20,23 @@ def index():
         else:
             try:
                 value = float(raw_value)
-                converted = convert_length(value, from_unit, to_unit)
+
+                if converter_type == "length":
+                    converted = convert_length(value, from_unit, to_unit)
+                elif converter_type == "weight":
+                    converted = convert_weight(value, from_unit, to_unit)
+                else:
+                    # Placeholder for future converters
+                    raise ValueError(f"{converter_type!r} converter not implemented just yet.")
+
                 result = {
+                    "converter_type": converter_type,
                     "input_value": value,
                     "from_unit": from_unit,
                     "to_unit": to_unit,
                     "output_value": round(converted, 6),
                 }
+
             except ValueError as e:
                 error = str(e)
 

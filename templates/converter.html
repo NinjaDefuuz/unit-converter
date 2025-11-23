@@ -49,19 +49,17 @@
 </head>
 <body>
     <h1>LB23 - Unit Converter</h1>
-    <div>
-        <label for="converters">Select converter</label>
-        <select id="converters">
-            <option value="length">Length converter</option>
-            <option value="weight">Weight converter</option>
-            <option value="temperature">Temperature converter</option>
-            <option value="air">Air converter</option>
-            <option value="mass">Mass converter</option>
-        </select>
-
-    </div>
 
     <form method="post">
+        <label for="converter_type">Select converter</label>
+        <select id="converter_type" name="converter_type">
+            <option value="length"  {% if result and result.converter_type == "length" %}selected{% endif %}>Length converter</option>
+            <option value="weight"  {% if result and result.converter_type == "weight" %}selected{% endif %}>Weight converter</option>
+            <option value="temp"    {% if result and result.converter_type == "temp" %}selected{% endif %}>Temperature converter</option>
+            <option value="air"     {% if result and result.converter_type == "air" %}selected{% endif %}>Air converter</option>
+            <option value="mass"    {% if result and result.converter_type == "mass" %}selected{% endif %}>Mass converter</option>
+        </select>
+        
         <label for="value">Value</label>
         <input
             id="value"
@@ -75,29 +73,11 @@
         <div class="row">
             <div>
                 <label for="from_unit">From</label>
-                <select id="from_unit" name="from_unit">
-                    <option value="m" {% if result and result.from_unit == "m" %}selected{% endif %}>Meter (m)</option>
-                    <option value="cm" {% if result and result.from_unit == "cm" %}selected{% endif %}>Centimeter (cm)</option>
-                    <option value="mm" {% if result and result.from_unit == "mm" %}selected{% endif %}>Millimeter (mm)</option>
-                    <option value="km" {% if result and result.from_unit == "km" %}selected{% endif %}>Kilometer (km)</option>
-                    <option value="in" {% if result and result.from_unit == "in" %}selected{% endif %}>Inches (in)</option>
-                    <option value="ft" {% if result and result.from_unit == "ft" %}selected{% endif %}>Feet (ft)</option>
-                    <option value="yd" {% if result and result.from_unit == "yd" %}selected{% endif %}>Yards (yd)</option>
-                    <option value="mi" {% if result and result.from_unit == "mi" %}selected{% endif %}>Miles (mi)</option>
-                </select>
+                <select id="from_unit" name="from_unit"></select>
             </div>
             <div>
                 <label for="to_unit">To</label>
-                <select id="to_unit" name="to_unit">
-                    <option value="m" {% if result and result.to_unit == "m" %}selected{% endif %}>Meter (m)</option>
-                    <option value="cm" {% if result and result.to_unit == "cm" %}selected{% endif %}>Centimeter (cm)</option>
-                    <option value="mm" {% if result and result.to_unit == "mm" %}selected{% endif %}>Millimeter (mm)</option>
-                    <option value="km" {% if result and result.to_unit == "km" %}selected{% endif %}>Kilometer (km)</option>
-                    <option value="in" {% if result and result.to_unit == "in" %}selected{% endif %}>Inches (in)</option>
-                    <option value="ft" {% if result and result.to_unit == "ft" %}selected{% endif %}>Feet (ft)</option>
-                    <option value="yd" {% if result and result.to_unit == "yd" %}selected{% endif %}>Yards (yd)</option>
-                    <option value="mi" {% if result and result.to_unit == "mi" %}selected{% endif %}>Miles (mi)</option>
-                </select>
+                <select id="to_unit" name="to_unit"></select>
             </div>
         </div>
 
@@ -114,5 +94,104 @@
             = {{ result.output_value }} {{result.to_unit }}
         </div>
     {% endif %}
+    <script>
+        // All unit options for each converter type
+        const UNIT_OPTIONS = {
+            length: [
+                { value: "m", label: "Meter (m)" },
+                { value: "cm", label: "Centimeter (cm)" },
+                { value: "mm", label: "Millimeter (mm)" },
+                { value: "km", label: "Kilometer (km)" },
+                { value: "in", label: "Inches (in)" },
+                { value: "ft", label: "Feet (ft)" },
+                { value: "yd", label: "Yards (yd)" },
+                { value: "mi", label: "Miles (mi)" },
+            ],
+            weight: [
+                { value: "kg", label: "Kilogram (kg)" },
+                { value: "g", label: "Gram (g)" },
+                { value: "lb", label: "Pounds (lb)" },
+                { value: "oz", label: "Ounces (oz)" },
+            ],
+            temp: [
+                { value: "c", label: "Celsius (°C)" },
+                { value: "f", label: "Fahrenheit (°F)" },
+                { value: "k", label: "Kelvin (K)" },
+            ],
+            air: [
+                { value: "bar", label: "Bar" },
+                { value: "psi", label: "PSI" },
+                { value: "pa", label: "Pascal (Pa)"},
+                { value: "kpa", label: "Kilopascal (kPa)" },
+                { value: "m3s", label: "Cubic Meter per Second (m³/s)" },
+                { value: "m3h", label: "Cubic Meter per Hour (m³/h)" },
+                { value: "cfm", label: "Cubic Feet per Minute (CFM)"},
+                { value: "ls", label: "Liters per Second (l/s)" },
+            ],
+            mass: [
+                { value: "kg", label: "Kilogram (kg)" },
+                { value: "mton", label: "Metric Ton (t)" },
+                { value: "loton", label: "Long Ton (lt)"},
+                { value: "shton", label: "Short Ton (st)"}
+            ],
+        };
+
+        function populateUnitSelects(converterType, currentFrom, currentTo) {
+            const fromSelect = document.getElementById("from_unit");
+            const toSelect = document.getElementById("to_unit");
+
+            const units = UNIT_OPTIONS[converterType] || UNIT_OPTIONS["length"];
+
+            // Clear existing options
+            fromSelect.innerHTML = "";
+            toSelect.innerHTML = "";
+
+            units.forEach((u, index) => {
+                const optFrom = document.createElement("option");
+                optFrom.value = u.value;
+                optFrom.textContent = u.label;
+
+                const optTo = document.createElement("option");
+                optTo.value = u.value;
+                optTo.textContent = u.label;
+
+                // Restore previous selection if possible
+                if (currentFrom && currentFrom === u.value) {
+                    optFrom.selected = true;
+                } else if (!currentFrom && index === 0) {
+                    optFrom.selected = true;
+                }
+
+                if (currentTo && currentTo === u.value) {
+                    optTo.selected = true;
+                } else if (!currentTo && index === units.length - 1) {
+                    optTo.selected = true;
+                }
+
+                fromSelect.appendChild(optFrom);
+                toSelect.appendChild(optTo);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const converterSelect = document.getElementById("converter_type");
+
+            // Initial values coming from server (if any)
+            const initialConverter = "{{ result.converter_type if result else 'length' }}";
+            const initialFromUnit = "{{ result.from_unit if result else '' }}";
+            const initialToUnit = "{{ result.to_unit if result else '' }}";
+
+            // Set converter dropdown to initial value
+            converterSelect.value = initialConverter || "length";
+
+            // Populate selects on page load
+            populateUnitSelects(converterSelect.value, initialFromUnit, initialToUnit);
+
+            // Update selects whenever converter type changes
+            converterSelect.addEventListener("change", function () {
+                populateUnitSelects(this.value, null, null);
+            });
+        });
+    </script>
 </body>
 </html>
