@@ -44,6 +44,32 @@ def convert_weight(value: float, from_unit: str, to_unit: str) -> float:
     if to_unit not in WEIGHT_IN_KG:
         raise ValueError(f"Unknown weight unit: {to_unit}")
     
+    #Converts to kg
     value_in_kg = value * WEIGHT_IN_KG[from_unit]
+    
+    #Converts from kg to desired unit
     converted_value = value_in_kg / WEIGHT_IN_KG[to_unit]
     return converted_value
+
+
+def convert_temp(value: float, from_unit: str, to_unit: str) -> float:
+    #Converts between Celsius, Fahrenheit, and Kelvin.
+
+    if from_unit == "c":
+        value_c = value
+    elif from_unit == "f":
+        value_c = (value - 32) * 5/9
+    elif from_unit == "k":
+        value_c = value - 273.15
+    else:
+        raise ValueError(f"Unknown temperature unit: {from_unit}")
+    
+    
+    if to_unit == "c":
+        return value_c
+    elif to_unit == "f":
+        return (value_c * 9/5) + 32
+    elif to_unit == "k":
+        return value_c + 273.15
+    else:
+        raise ValueError(f"Unknown temperature unit: {to_unit}")

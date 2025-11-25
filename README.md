@@ -45,26 +45,27 @@ Started as a roadmap.sh project, to be implemented to my own website.
 ## How to run
 
 1. Install dependencies (Flask):
-    
+```
     pip install flask
-
+```
 1. Run the project:
-    
+```    
     python app.py
-
+```
 1. Open the browser:
-
+```
     http://127.0.0.1:5000
-
+```
 ## Adding New Converters
 Add new converters simply by:
 1. Creating a function in converter_core.py
-2. Expanding UNITS_OPTIONS in converter.html
+2. Expanding UNIT_OPTIONS in converter.html
 3. Adding logic in app.py:
    
-   elif converter_type == "your_type":
-
-    converted = convert_your_type(value, from_unit, to_unit)
+   ```
+    elif converter_type == "your_type":
+        converted = convert_your_type(value, from_unit, to_unit)
+    ```
 
 
 ## Future Plans

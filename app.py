@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from converter_core import convert_length, convert_weight
+from converter_core import convert_length, convert_weight, convert_temp
 
 app = Flask(__name__)
 
@@ -25,6 +25,9 @@ def index():
                     converted = convert_length(value, from_unit, to_unit)
                 elif converter_type == "weight":
                     converted = convert_weight(value, from_unit, to_unit)
+                elif converter_type == "temp":
+                    converted = convert_temp(value, from_unit, to_unit)
+
                 else:
                     # Placeholder for future converters
                     raise ValueError(f"{converter_type!r} converter not implemented just yet.")
