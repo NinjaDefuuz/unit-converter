@@ -72,7 +72,7 @@ Add new converters simply by:
 
 - [x] Implement Length converter
 - [x] Implement Weight converter
-- [ ] Implement temperature converter
+- [x] Implement temperature converter
 - [ ] Implement air converter
 - [ ] Implement Mass converter
 - [ ] Implement HVAC converter
